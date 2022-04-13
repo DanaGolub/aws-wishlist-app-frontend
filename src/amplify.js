@@ -60,12 +60,17 @@ export async function getComments(postId) {
 }
 
 
-export async function getComment(pId, cId) {
+export async function updateComment(pId, cId, comment) {
   const postId = (pId).replace("POST#", "")
   const commentId = (cId).replace("COMMENT#", "")
+  console.log(comment)
   const path = `/posts/${postId}/${commentId}`
   console.log('path for del url: ' + path)
-  const result = await API.get(apiName, path)
+  const result = await API.put(apiName, path, {
+    body: {
+      comment,
+    }
+  })
   console.log(result)
   return result;
 

@@ -4,6 +4,7 @@ import { Button, Text, View, Authenticator } from '@aws-amplify/ui-react';
 import { Auth } from 'aws-amplify';
 import '@aws-amplify/ui-react/styles.css';
 import './App.css';
+import { ComponentClassObject } from '@aws-amplify/ui-react';
 
 function App() {
 
@@ -17,7 +18,7 @@ function App() {
   const [imgUrl, setImgUrl] = useState([])
   const [description, setDescription] = useState("")
   const [arrayOfImages, setArrayOfImages] = useState([])
-  const [updatedComment, setUpdatedComment] = useState({ updatedCommentText: "", boolUpdatedComment: false, postId: "" })
+  const [updatedComment, setUpdatedComment] = useState({ updatedCommentText: "", boolUpdatedComment: false, postId: "", commentId: "" })
   const [arrayOfComments, setArrayOfComments] = useState([])
 
   const [comment, setComment] = useState({ commentText: "", postId: "" })
@@ -87,7 +88,13 @@ function App() {
     getPosts()
   }
 
-
+  const editComment = async event => {
+    event.preventDefault()
+    console.log("post id " + updatedComment.postId + ";comment id " + updatedComment.commentId + ";new text " + updatedComment.updatedCommentText)
+    const result = await amplify.updateComment(updatedComment.postId, updatedComment.commentId, updatedComment.updatedCommentText)
+    console.log(result)
+    getPosts()
+  }
   // async function retrieveComments(postId) {
   //   const result = await amplify.getComments(postId)
   //   setArrayOfComments(result)
@@ -98,10 +105,10 @@ function App() {
   // }
 
 
-  async function editComment(postId, commentId) {
-    const result = await amplify.getComment(postId, commentId)
+  // async function editComment(postId, commentId) {
+  //   const result = await amplify.getComment(postId, commentId)
 
-  }
+  // }
 
 
   async function deleteComment(postId, commentId) {
@@ -140,8 +147,8 @@ function App() {
                       {image.comments && image.comments.map(cm => (
                         <div>
                           <Button onClick={() => deleteComment(cm.PK, cm.SK)} size="small">Delete</Button>
-                          <Button onClick={() => setUpdatedComment({ updatedCommentText: cm.text, boolUpdatedComment: true, postId: cm.PK })} size="small">Edit Comment</Button>
-                          <p>{cm.text}</p>
+                          <Button onClick={() => setUpdatedComment({ updatedCommentText: cm.commentText, boolUpdatedComment: true, postId: cm.PK, commentId: cm.SK })} size="small">Edit Comment</Button>
+                          <p>{cm.commentText}</p>
                         </div>
                       ))}
                     </div>
@@ -152,19 +159,18 @@ function App() {
                   </div>
                   {/* Need to test if this is visible for non-logged in users ------> */}
 
-
-                  {/* {updatedComment && (updatedComment.postId == image.SK) ? */}
                   {updatedComment && (updatedComment.postId == image.SK) ?
                     (
                       <form className="comment-form" onSubmit={editComment}>
                         <input
                           // value={updatedComment.postId}
                           value={updatedComment.updatedCommentText}
-                          onChange={e => setUpdatedComment({ updatedCommentText: e.target.value, boolUpdatedComment: true, postId: image.SK })}
+                          onChange={e => setUpdatedComment({ updatedCommentText: e.target.value, boolUpdatedComment: true, postId: image.SK, commentId: updatedComment.commentId })}
+                          // onChange={e => console.log(e.target.value)}
                           type="text"
                           placeholder="comment">
                         </input>
-                        <Button onClick={() => console.log(updatedComment.updatedCommentText)} size="small">Edit this comment</Button>
+                        <Button type="submit" size="small">Edit this comment</Button>
                       </form>
                     )
                     :
