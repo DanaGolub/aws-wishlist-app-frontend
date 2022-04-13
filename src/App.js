@@ -151,27 +151,33 @@ function App() {
                     </div>
                   </div>
                   {/* Need to test if this is visible for non-logged in users ------> */}
-                  <form className="comment-form" onSubmit={createComment}>
 
-                    {/* {!updatedComment.boolUpdatedComment ? */}
-                    {!updatedComment ?
-                      <input onChange={e => setComment({ commentText: e.target.value, postId: image.id })} type="text" placeholder="comment"></input>
-                      :
-                      // (updatedComment.postId == image.SK) &&
-                      <input
-                        // value={updatedComment.postId}
-                        value={updatedComment.updatedCommentText}
-                        onChange={e => setUpdatedComment({ updatedCommentText: e.target.value, boolUpdatedComment: true })} type="text" placeholder="comment"></input>
-                    }
 
-                    {!updatedComment.boolUpdatedComment ?
-                      <Button size="small" type="submit">Add a comment</Button>
-                      :
-                      <Button onClick={() => console.log(updatedComment.updatedCommentText)} size="small">Edit this comment</Button>
-                    }
-                  </form>
-                  {/* <--------------------------------------------------------------- */}
-
+                  {/* {updatedComment && (updatedComment.postId == image.SK) ? */}
+                  {updatedComment && (updatedComment.postId == image.SK) ?
+                    (
+                      <form className="comment-form" onSubmit={editComment}>
+                        <input
+                          // value={updatedComment.postId}
+                          value={updatedComment.updatedCommentText}
+                          onChange={e => setUpdatedComment({ updatedCommentText: e.target.value, boolUpdatedComment: true, postId: image.SK })}
+                          type="text"
+                          placeholder="comment">
+                        </input>
+                        <Button onClick={() => console.log(updatedComment.updatedCommentText)} size="small">Edit this comment</Button>
+                      </form>
+                    )
+                    :
+                    (
+                      <form className="comment-form" onSubmit={createComment}>
+                        <input onChange={e => setComment({ commentText: e.target.value, postId: image.id })}
+                          type="text"
+                          placeholder="comment">
+                        </input>
+                        <Button size="small" type="submit">Add a comment</Button>
+                      </form>
+                    )
+                  }
                   <hr />
                 </div>
               )
