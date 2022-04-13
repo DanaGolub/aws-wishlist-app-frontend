@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-wishlistapp-dev-122007-authRole",
+      "UnauthRoleArn": "arn:aws:iam::651120021171:role/amplify-wishlistapp-dev-122007-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::651120021171:role/amplify-wishlistapp-dev-122007-authRole",
+      "Region": "us-west-1",
+      "DeploymentBucketName": "amplify-wishlistapp-dev-122007-deployment",
+      "UnauthRoleName": "amplify-wishlistapp-dev-122007-unauthRole",
+      "StackName": "amplify-wishlistapp-dev-122007",
+      "StackId": "arn:aws:cloudformation:us-west-1:651120021171:stack/amplify-wishlistapp-dev-122007/6a85f0e0-b05e-11ec-93fb-020bcf352f15",
+      "AmplifyAppId": "d2u3ddvotrqgf0"
+    },
+    "categories": {
+      "auth": {
+        "wishlistapp446387e3": {}
+      }
+    }
+  }
+}

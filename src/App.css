@@ -1,11 +1,68 @@
 .App {
   text-align: center;
+  background-color: white;
+  justify-content: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.top-section {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 30px;
+  background-color: rgb(241, 241, 181);
 }
+
+
+.post-form {
+  /* padding: 10px 150px; */
+  display: flex;
+  flex-direction: column;
+}
+
+.signout-btn {
+  padding: 10px;
+}
+
+.post-img-btns-container {
+  display: flex;
+  flex-direction: row;
+  padding: 20px 100px;
+  justify-content: center;
+}
+
+.post-btns {
+  flex-direction: column;
+  padding-left: 10px;
+}
+
+.post-img {
+  max-width: 400px;
+  border: 5px solid rgb(56, 56, 56);
+  border-radius: 10%;
+}
+
+.post-container {
+  border: 1px solid gray;
+  padding: 100px;
+}
+
+.post-description {
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  margin-top: 0;
+}
+
+.comment-form {
+  display: flex;
+  flex-direction: row;
+  /* margin: auto; */
+  justify-content: center;
+}
+
+.comment-form input {
+  width: 500px;
+}
+
+/*
+
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
@@ -35,4 +92,4 @@
   to {
     transform: rotate(360deg);
   }
-}
+} */
