@@ -60,6 +60,21 @@ export async function getComments(postId) {
 }
 
 
+export async function updatePost(pId, description) {
+  const postId = (pId).replace("POST#", "")
+
+  const path = `/posts/${postId}`
+  console.log('path for del url: ' + path)
+  const result = await API.put(apiName, path, {
+    body: {
+      description,
+    }
+  })
+  console.log(result)
+  return result;
+}
+
+
 export async function updateComment(pId, cId, comment) {
   const postId = (pId).replace("POST#", "")
   const commentId = (cId).replace("COMMENT#", "")
@@ -73,9 +88,9 @@ export async function updateComment(pId, cId, comment) {
   })
   console.log(result)
   return result;
-
-  // return comments.Items
 }
+
+
 
 
 export async function createComment(postId, text) {

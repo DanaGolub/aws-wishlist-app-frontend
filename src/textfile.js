@@ -4,6 +4,7 @@ import { Button, Text, View, Authenticator } from '@aws-amplify/ui-react';
 import { Auth } from 'aws-amplify';
 import '@aws-amplify/ui-react/styles.css';
 import './App.css';
+import { ComponentClassObject } from '@aws-amplify/ui-react';
 
 function App() {
 
@@ -17,7 +18,8 @@ function App() {
     const [imgUrl, setImgUrl] = useState([])
     const [description, setDescription] = useState("")
     const [arrayOfImages, setArrayOfImages] = useState([])
-    const [updatedComment, setUpdatedComment] = useState({ updatedCommentText: "", boolUpdatedComment: false, postId: "" })
+    const [updatedComment, setUpdatedComment] = useState({ updatedCommentText: "", boolUpdatedComment: false, postId: "", commentId: "" })
+    const [updatedPost, setUpdatedPost] = useState({ updatedPostText: "", boolUpdatedPost: false, postId: "" })
     const [arrayOfComments, setArrayOfComments] = useState([])
 
     const [comment, setComment] = useState({ commentText: "", postId: "" })
@@ -87,7 +89,22 @@ function App() {
         getPosts()
     }
 
+    const editComment = async event => {
+        event.preventDefault()
+        console.log("post id " + updatedComment.postId + ";comment id " + updatedComment.commentId + ";new text " + updatedComment.updatedCommentText)
+        const result = await amplify.updateComment(updatedComment.postId, updatedComment.commentId, updatedComment.updatedCommentText)
+        console.log(result)
+        getPosts()
+    }
 
+
+    const editPost = async event => {
+        event.preventDefault()
+        console.log("post id " + updatedComment.postId + ";comment id " + updatedComment.commentId + ";new text " + updatedComment.updatedCommentText)
+        const result = await amplify.updateComment(updatedComment.postId, updatedComment.commentId, updatedComment.updatedCommentText)
+        console.log(result)
+        getPosts()
+    }
     // async function retrieveComments(postId) {
     //   const result = await amplify.getComments(postId)
     //   setArrayOfComments(result)
@@ -98,10 +115,10 @@ function App() {
     // }
 
 
-    async function editComment(postId, commentId) {
-        const result = await amplify.getComment(postId, commentId)
+    // async function editComment(postId, commentId) {
+    //   const result = await amplify.getComment(postId, commentId)
 
-    }
+    // }
 
 
     async function deleteComment(postId, commentId) {
@@ -140,42 +157,63 @@ function App() {
                                             {image.comments && image.comments.map(cm => (
                                                 <div>
                                                     <Button onClick={() => deleteComment(cm.PK, cm.SK)} size="small">Delete</Button>
-                                                    <Button onClick={() => setUpdatedComment({ updatedCommentText: cm.text, boolUpdatedComment: true, postId: cm.PK })} size="small">Edit Comment</Button>
-                                                    <p>{cm.text}</p>
+                                                    <Button onClick={() => setUpdatedComment({ updatedCommentText: cm.commentText, boolUpdatedComment: true, postId: cm.PK, commentId: cm.SK })} size="small">Edit Comment</Button>
+                                                    <p>{cm.commentText}</p>
                                                 </div>
                                             ))}
                                         </div>
                                         <div className="post-btns">
-                                            {user && <Button size="small" onClick={signOut}>Edit Post</Button >}
+                                            {/* {user && <Button size="small" onClick={editPost}>Edit Post</Button >} */}
+                                            {user && <Button size="small" onClick={setUpdatedPost({ updatedPostText: image.description, boolUpdatedPost: true, postId: image.SK })}>Edit Post</Button >}
+
                                             {user && <Button size="small" onClick={() => deletePost(image.imageName, image.id, user.username)}>Delete Post</Button >}
                                         </div>
                                     </div>
                                     {/* Need to test if this is visible for non-logged in users ------> */}
 
+                                    {updatedComment && (updatedComment.postId == image.SK) ?
+                                        (
+                                            <form className="comment-form" onSubmit={editComment}>
+                                                <input
+                                                    // value={updatedComment.postId}
+                                                    value={updatedComment.updatedCommentText}
+                                                    onChange={e => setUpdatedComment({ updatedCommentText: e.target.value, boolUpdatedComment: true, postId: image.SK, commentId: updatedComment.commentId })}
+                                                    // onChange={e => console.log(e.target.value)}
+                                                    type="text"
+                                                    placeholder="comment">
+                                                </input>
+                                                <Button type="submit" size="small">Edit this comment</Button>
+                                            </form>
+                                        )
+                                        :
+                                        (
+                                            <form className="comment-form" onSubmit={createComment}>
+                                                <input onChange={e => setComment({ commentText: e.target.value, postId: image.id })}
+                                                    type="text"
+                                                    placeholder="comment">
+                                                </input>
+                                                <Button size="small" type="submit">Add a comment</Button>
+                                            </form>
+                                        )
+                                    }
+                                    {updatedPost &&
+                                        (
+                                            <form className="post-form" onSubmit={editPost}>
+                                                <input
+                                                    // value={updatedComment.postId}
+                                                    value={updatedPost.updatedPostText}
+                                                    onChange={e => setUpdatedPost({ updatedPostText: e.target.value, boolUpdatedPost: true, postId: image.SK })}
+                                                    // onChange={e => console.log(e.target.value)}
+                                                    type="text"
+                                                    placeholder="comment">
+                                                </input>
+                                                <Button type="submit" size="small">Edit this comment</Button>
+                                            </form>
+                                        )
 
+                                    }
 
-                                    <form className="comment-form" onSubmit={createComment}>
-
-                                        {/* {!updatedComment.boolUpdatedComment ? */}
-                                        {!updatedComment ?
-                                            <input onChange={e => setComment({ commentText: e.target.value, postId: image.id })} type="text" placeholder="comment"></input>
-                                            :
-                                            // (updatedComment.postId == image.SK) &&
-                                            <input
-                                                // value={updatedComment.postId}
-                                                value={updatedComment.updatedCommentText}
-                                                onChange={e => setUpdatedComment({ updatedCommentText: e.target.value, boolUpdatedComment: true })} type="text" placeholder="comment"></input>
-                                        }
-
-                                        {!updatedComment.boolUpdatedComment ?
-                                            <Button size="small" type="submit">Add a comment</Button>
-                                            :
-                                            <Button onClick={() => console.log(updatedComment.updatedCommentText)} size="small">Edit this comment</Button>
-                                        }
-                                    </form>
-                                    {/* <--------------------------------------------------------------- */}
-
-                                    <hr />
+                                    {/* <hr /> */}
                                 </div>
                             )
                             )

@@ -19,6 +19,10 @@ function App() {
   const [description, setDescription] = useState("")
   const [arrayOfImages, setArrayOfImages] = useState([])
   const [updatedComment, setUpdatedComment] = useState({ updatedCommentText: "", boolUpdatedComment: false, postId: "", commentId: "" })
+  // const [updatedPost, setUpdatedPost] = useState({ updatedPostText: "", boolUpdatedPost: false, postId: "" })
+  const [updatedPost, setUpdatedPost] = useState(false)
+  const [updatedPostText, setUpdatedPostText] = useState({ postText: "", postId: "" })
+
   const [arrayOfComments, setArrayOfComments] = useState([])
 
   const [comment, setComment] = useState({ commentText: "", postId: "" })
@@ -95,6 +99,15 @@ function App() {
     console.log(result)
     getPosts()
   }
+
+
+  const editPost = async event => {
+    event.preventDefault()
+    console.log(updatedPostText)
+    const result = await amplify.updatePost(updatedPostText.postId, updatedPostText.postText)
+    console.log(result)
+    getPosts()
+  }
   // async function retrieveComments(postId) {
   //   const result = await amplify.getComments(postId)
   //   setArrayOfComments(result)
@@ -139,7 +152,7 @@ function App() {
             {
               arrayOfImages && arrayOfImages.map(image => (
                 <div className="post-container" key={image.key} >
-                  <p>{image.SK}</p>
+                  {/* <p>{image.SK}</p> */}
                   <div className="post-img-btns-container">
                     <div className="img-descr">
                       <img className="post-img" src={image.imageUrl}></img>
@@ -153,7 +166,7 @@ function App() {
                       ))}
                     </div>
                     <div className="post-btns">
-                      {user && <Button size="small" onClick={signOut}>Edit Post</Button >}
+                      {user && <Button size="small" onClick={() => setUpdatedPost(true)}>Edit Post</Button >}
                       {user && <Button size="small" onClick={() => deletePost(image.imageName, image.id, user.username)}>Delete Post</Button >}
                     </div>
                   </div>
@@ -163,10 +176,8 @@ function App() {
                     (
                       <form className="comment-form" onSubmit={editComment}>
                         <input
-                          // value={updatedComment.postId}
                           value={updatedComment.updatedCommentText}
                           onChange={e => setUpdatedComment({ updatedCommentText: e.target.value, boolUpdatedComment: true, postId: image.SK, commentId: updatedComment.commentId })}
-                          // onChange={e => console.log(e.target.value)}
                           type="text"
                           placeholder="comment">
                         </input>
@@ -184,7 +195,20 @@ function App() {
                       </form>
                     )
                   }
-                  <hr />
+
+                  {updatedPost &&
+                    (
+                      <form className="comment-form" onSubmit={editPost}>
+                        <input
+                          onChange={e => setUpdatedPostText({ postText: e.target.value, postId: image.SK })}
+                          type="text"
+                          placeholder="edit post">
+                        </input>
+                        <Button type="submit" size="small">Edit your post</Button>
+                      </form>
+                    )
+
+                  }
                 </div>
               )
               )
